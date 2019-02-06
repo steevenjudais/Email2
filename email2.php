@@ -2,7 +2,7 @@
 //Info base
 $dbhost = "localhost";
 $dbuser = "root";
-$dbpass = "joliverie";
+$dbpass = "rtlry";
 $db = "mail";
 $user="";
 $iduser="";
@@ -21,7 +21,8 @@ catch (Exception $e)
         if (isset($_GET["user"])){
             echo "<h1>Ma mail-lerie : ".$_GET['user']."</h1>";
         }
-    }
+	}
+	
     if (isset($_GET['user'])){
         $user = $_GET['user'];
         if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
@@ -100,29 +101,28 @@ catch (Exception $e)
                 
             function ajouterMail(user){
 				xhr = new XMLHttpRequest();
-				xhr.open('POST', '/send.php');
-				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						//window.location.href="email2.php?user=" + user + '&id=' + id;
-						document.getElementById('message').value = "";
-						document.getElementById('dest').value = "";
-					}
-				}
-				xhr.send('user=' + user  + '&dest=' + document.getElementById("dest").value + '&message=' + document.getElementById("message").value);
+				var myForm = document.getElementById('envoi');
+				formData = new FormData(myForm);
+				formData.append("user", user);
+				xhr.open('POST', 'send.php');
+				xhr.send(formData);
 
+				document.getElementById('message').value = "";
+						
+				document.getElementById('dest').value = "";
+
+				return false;
 			}
 			
 			function supprimer(id,user, id_liste){
 				xhr = new XMLHttpRequest();
-				xhr.open('DELETE', '/email2.php?user=' + user + '&idSUP=' + id);
+				var myForm = document.getElementById('croix');
+				formData = new FormData(myForm);
+				formData.append("user", user);
+				xhr.open('DELETE', 'delete.php');
 				xhr.send(null);
 					
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						//window.location.href="index.php?user=" + user;
-					}
-				}
+				
                 
                 var list_mail = document.getElementById("_liste_mail");
                 list_mail.removeChild(list_mail.childNodes[id_liste]);
@@ -138,7 +138,7 @@ catch (Exception $e)
         </div>
 		
 		<div id="creation_mail" >
-			<div id="envoi">
+			<form name ="envoi" id="envoi" onsubmit="return ajouterMail(<?php echo "'$user'" ?>)" method="POST">
 				<div id="_Destinataire">
 					<label for="dest">Destinataire:  </label>
 					<input type="text" id="dest" name="dest" style="width:100%" maxlength="20"/>
@@ -146,8 +146,8 @@ catch (Exception $e)
 				<div id="_Message">
 					<label for="message" id ="ooo">Message:  </label>
 					<input type="text" id="message" name="message"  style="width:100%" maxlength="300"/>
-					<input type="submit" name="Envoyer" value="Envoyer" onclick="ajouterMail(<?php echo "'$user'"?>)" id="btnEnvoyer">
-				</div>
+					<input type="submit" value="Envoyer" id="btnEnvoyer">
+				</form>
 			</div>
         </div>
 		
