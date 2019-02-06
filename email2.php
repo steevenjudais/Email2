@@ -114,15 +114,16 @@ catch (Exception $e)
 				return false;
 			}
 			
-			function supprimer(id,user, id_liste){
+		function supprimer(id,user, id_liste){
 				xhr = new XMLHttpRequest();
-				var myForm = document.getElementById('croix');
-				formData = new FormData(myForm);
-				formData.append("user", user);
-				xhr.open('DELETE', 'delete.php');
+				xhr.open('DELETE', 'email2.php?user=' + user + '&idSUP=' + id);
 				xhr.send(null);
 					
-				
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState == 4) {
+						//window.location.href="index.php?user=" + user;
+					}
+				}
                 
                 var list_mail = document.getElementById("_liste_mail");
                 list_mail.removeChild(list_mail.childNodes[id_liste]);
